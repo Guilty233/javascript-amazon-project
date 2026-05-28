@@ -1,4 +1,4 @@
-import {cart} from '../data/cart.js'; // import the cart array from the cart.js file, help us avoid circular dependencies between our modules
+import {cart, addToCart, updateCartQuantity} from '../data/cart.js'; // import the cart array from the cart.js file, help us avoid circular dependencies between our modules
 import {products} from '../data/products.js'; // import the products array from the products.js file
 let productsHTML = '';
 
@@ -59,16 +59,13 @@ products.forEach((product) => {
 });
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-function updateCartQuantity() {
-  let cartQuantity = 0;
-
-  cart.forEach((item) => {
-    cartQuantity += item.quantity;
-  });
-
-  document.querySelector('.cart-quantity').innerHTML = cartQuantity;
+function showAddedToCartMessage(productId) {
+  const addedToCartMessage = document.querySelector(`.added-to-cart[data-product-id="${productId}"]`);
+  addedToCartMessage.classList.add('added-visible');
+  setTimeout(() => {
+    addedToCartMessage.classList.remove('added-visible');
+  }, 2000);
 }
-
 document.querySelectorAll('.js-add-to-cart')
 .forEach((button, index) => {
   button.addEventListener('click', () => {
@@ -77,25 +74,9 @@ document.querySelectorAll('.js-add-to-cart')
       const quantitySelect = button.closest('.product-container').querySelector('select');
       const quantityToAdd = quantitySelect ? (parseInt(quantitySelect.value, 10) || 1) : 1;
 
-      const matchingProduct = cart.find((item) => item.id === productId);
+    addToCart(productId, quantityToAdd);
 
-      if (matchingProduct) {
-        matchingProduct.quantity += quantityToAdd;
-      } else {
-        cart.push({
-          id: productId,
-          quantity: quantityToAdd
-        });
-      }
-
-    updateCartQuantity();
-
-    const addedToCartMessage = button.closest('.product-container').querySelector('.added-to-cart');
-    // show the "Added" message by adding a class, then remove it after delay
-    addedToCartMessage.classList.add('added-visible');
+    showAddedToCartMessage(productId);
     console.log(cart);
-    setTimeout(() => {
-      addedToCartMessage.classList.remove('added-visible');
-    }, 2000);
   }); 
 });
