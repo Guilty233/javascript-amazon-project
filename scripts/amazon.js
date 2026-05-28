@@ -1,4 +1,4 @@
-
+import {cart} from '../data/cart.js'; // import the cart array from the cart.js file, help us avoid circular dependencies between our modules
 let productsHTML = '';
 
 products.forEach((product) => {
@@ -29,7 +29,7 @@ products.forEach((product) => {
       </div>
 
       <div class="product-quantity-container">
-        <select>
+        <select class="js-product-quantity-selector" data-product-id="${product.id}">
           <option selected value="1">1</option>
           <option value="2">2</option>
           <option value="3">3</option>
@@ -65,32 +65,36 @@ function updateCartQuantity() {
     cartQuantity += item.quantity;
   });
 
-  document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+  document.querySelector('.cart-quantity').innerHTML = cartQuantity;
 }
 
 document.querySelectorAll('.js-add-to-cart')
 .forEach((button, index) => {
   button.addEventListener('click', () => {
     const productId = button.dataset.productId;
+      // read quantity from the product's select dropdown
+      const quantitySelect = button.closest('.product-container').querySelector('select');
+      const quantityToAdd = quantitySelect ? (parseInt(quantitySelect.value, 10) || 1) : 1;
 
-    const matchingProduct = cart.find((item) => item.id === productId);
+      const matchingProduct = cart.find((item) => item.id === productId);
 
-    if (matchingProduct) {
-      matchingProduct.quantity += 1;
-    } else {
-      cart.push({
-        id: productId,
-        quantity: 1
-      });
-    }
+      if (matchingProduct) {
+        matchingProduct.quantity += quantityToAdd;
+      } else {
+        cart.push({
+          id: productId,
+          quantity: quantityToAdd
+        });
+      }
 
     updateCartQuantity();
 
     const addedToCartMessage = button.closest('.product-container').querySelector('.added-to-cart');
-    addedToCartMessage.style.opacity = 1;
+    // show the "Added" message by adding a class, then remove it after delay
+    addedToCartMessage.classList.add('added-visible');
     console.log(cart);
     setTimeout(() => {
-      addedToCartMessage.style.opacity = 0;
+      addedToCartMessage.classList.remove('added-visible');
     }, 2000);
   }); 
 });
