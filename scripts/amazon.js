@@ -1,4 +1,5 @@
 import {cart} from '../data/cart.js'; // import the cart array from the cart.js file, help us avoid circular dependencies between our modules
+import {products} from '../data/products.js'; // import the products array from the products.js file
 let productsHTML = '';
 
 products.forEach((product) => {
