@@ -1,4 +1,4 @@
-import {cart} from '../data/cart.js'; // import the cart array from the cart.js file, help us avoid circular dependencies between our modules
+import {cart, removeFromCart} from '../data/cart.js'; // import the cart array from the cart.js file, help us avoid circular dependencies between our modules
 import {products} from '../data/products.js'; // import the products array from the products.js file
 import {formatCurrency} from './utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 let cartSummaryHTML = '';
@@ -25,7 +25,7 @@ cart.forEach((item) => {
             ${matchingProduct.name}
           </div>
           <div class="product-price">
-            $${formatCurrency(matchingProduct.priceCents)}
+            ${formatCurrency(matchingProduct.priceCents)}
           </div>
           <div class="product-quantity">
             <span>
@@ -34,7 +34,7 @@ cart.forEach((item) => {
             <span class="update-quantity-link link-primary">
               Update
             </span>
-            <span class="delete-quantity-link link-primary">
+            <span class="delete-quantity-link link-primary js-delete-from-cart" data-product-id="${matchingProduct.id}">
               Delete
             </span>
           </div>
@@ -66,7 +66,7 @@ cart.forEach((item) => {
                 Wednesday, June 15
               </div>
               <div class="delivery-option-price">
-                $4.99 - Shipping
+                ${formatCurrency(499)}
               </div>
             </div>
           </div>
@@ -88,3 +88,10 @@ cart.forEach((item) => {
   </div>`; // each option has a unique name attribute on the input so that they work as separate groups of radio buttons, allowing the user to select a delivery option for each product in their cart
 });
 document.querySelector('.js-order-summary').innerHTML = cartSummaryHTML;
+document.querySelectorAll('.js-delete-from-cart').forEach((link) => {
+  link.addEventListener('click', () => {
+    const productId = link.dataset.productId;
+    removeFromCart(productId);
+    console.log(cart);
+  });
+});
