@@ -1,4 +1,4 @@
-import {cart, removeFromCart, updateCartItemQuantity} from '../data/cart.js'; // import cart helpers from cart.js
+import {cart, removeFromCart, updateCartItemQuantity, updateDeliveryOption} from '../data/cart.js'; // import cart helpers from cart.js
 import {products} from '../data/products.js'; // import the products array from the products.js file
 import {formatCurrency} from './utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'; // import the Day.js library to work with dates
@@ -73,7 +73,7 @@ cart.forEach((item) => {
         </div>
       </div>
 
-      <div class="delivery-options">
+      <div class="delivery-options js-delivery-option">
         <div class="delivery-options-title">
           Choose a delivery option:
         </div>
@@ -92,7 +92,7 @@ function deliveryOptionHTML(productId, item) {
     const price = option.priceCents === 0 ? 'Free Shipping' : `$${formatCurrency(option.priceCents)} - Shipping`;
     const isChecked = item.deliverOptions === option.id;
     deliveryOptionsHTML += `
-    <div class="delivery-option">
+    <div class="delivery-option js-delivery-option" data-product-id="${productId}" data-delivery-option-id="${option.id}">
       <input type="radio" ${isChecked ? 'checked' : ''} 
         class="delivery-option-input"
         name="delivery-option-${productId}"> 
@@ -119,11 +119,17 @@ document.querySelectorAll('.js-delete-from-cart').forEach((link) => {
     updateCheckoutItemsQuantity();
   });
 });
+document.querySelectorAll('.js-delivery-option').forEach((element) => {
+  element.addEventListener('click', () => {
+    const {productId, deliveryOptionId} = element.dataset; // get the productId and deliveryOptionId from the data attributes of the clicked element
+    updateDeliveryOption(productId, deliveryOptionId);
+  });
+});
 document.querySelectorAll('.js-update-cart-quantity').forEach((link) => {
   link.addEventListener('click', () => {
     const productId = link.dataset.productId;
     const quantityInput = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
-
+    
     if (quantityInput) {
       setEditingQuantity(productId, true);
       quantityInput.focus();

@@ -5,7 +5,7 @@ export let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem
   deliverOptions: '1'
   },{
   productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
-  quantity: 10,
+  quantity: 1,
   deliverOptions: '2'
   }
 ];
@@ -65,4 +65,12 @@ export function updateCartItemQuantity(productId, quantity) {
   matchingProduct.quantity = quantity;
   saveToLocalStorage();
   updateCartQuantity();
+}
+
+export function updateDeliveryOption(productId, deliveryOptionId) {
+  const matchingProduct = cart.find((item) => item.productId === productId);
+  if (matchingProduct) {
+    matchingProduct.deliverOptions = deliveryOptionId;
+    saveToLocalStorage();
+  }
 }
