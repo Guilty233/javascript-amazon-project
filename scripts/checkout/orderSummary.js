@@ -1,8 +1,9 @@
 import {cart, removeFromCart, updateCartItemQuantity, updateDeliveryOption} from '../../data/cart.js'; // import cart helpers from cart.js
-import {products} from '../../data/products.js'; // import the products array from the products.js file
+import {products, getProduct} from '../../data/products.js'; // import the products array from the products.js file
 import {formatCurrency} from '../utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'; // import the Day.js library to work with dates
-import {deliveryOptions} from '../../data/deliveryOptions.js'; // import the deliveryOptions array from the deliveryOptions.js file to display delivery options for each product in the cart
+import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js'; // import the deliveryOptions array from the deliveryOptions.js file to display delivery options for each product in the cart
+import {renderPaymentSummary} from './paymentSummary.js'; // import the renderPaymentSummary function from the paymentSummary.js file to update the payment summary when a delivery option is selected
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
 
@@ -27,19 +28,9 @@ export function renderOrderSummary() {
 
   cart.forEach((item) => {
     const productId = item.productId;
-    let matchingProduct;
-    products.forEach((product) => {
-      if (product.id === productId) {
-        matchingProduct = product;
-      }
-    });
+    let matchingProduct = getProduct(productId);
     const deliveryOptionId = item.deliverOptions;
-    let deliveryOption;
-    deliveryOptions.forEach((option) => {
-      if (option.id === deliveryOptionId) {
-        deliveryOption = option;
-      }
-    }); // find the delivery option that matches the one selected for this cart item, so that we can display the correct delivery date and price for the selected delivery option
+    let deliveryOption = getDeliveryOption(deliveryOptionId);
     cartSummaryHTML +=
     `<div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
       <div class="delivery-date">
@@ -89,7 +80,7 @@ export function renderOrderSummary() {
     deliveryOptions.forEach((option) => {
       const today = dayjs();
       const deliveryDate = today.add(option.days, 'day').format('dddd, MMMM D');
-      const price = option.priceCents === 0 ? 'Free Shipping' : `$${formatCurrency(option.priceCents)} - Shipping`;
+      const price = option.priceCents === 0 ? 'Free Shipping' : `${formatCurrency(option.priceCents)} - Shipping`;
       const isChecked = item.deliverOptions === option.id;
       deliveryOptionsHTML += `
       <div class="delivery-option js-delivery-option" data-product-id="${productId}" data-delivery-option-id="${option.id}">
@@ -117,6 +108,7 @@ export function renderOrderSummary() {
       const cartItemContainer = document.querySelector(`.js-cart-item-container-${productId}`);
       cartItemContainer.remove();
       updateCheckoutItemsQuantity();
+      renderPaymentSummary(); // re-render the payment summary to update the displayed total price based on the removed product
     });
   });
   document.querySelectorAll('.js-delivery-option').forEach((element) => {
@@ -124,6 +116,7 @@ export function renderOrderSummary() {
       const {productId, deliveryOptionId} = element.dataset; // get the productId and deliveryOptionId from the data attributes of the clicked element
       updateDeliveryOption(productId, deliveryOptionId);
       renderOrderSummary(); // re-render the order summary to update the displayed delivery date and price based on the newly selected delivery option
+      renderPaymentSummary(); // re-render the payment summary to update the displayed delivery price based on the newly selected delivery option
     });
   });
   document.querySelectorAll('.js-update-cart-quantity').forEach((link) => {
