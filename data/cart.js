@@ -1,10 +1,12 @@
 export let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) :
 [{
   productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
-  quantity: 2
+  quantity: 2,
+  deliverOptions: '1'
   },{
   productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
-  quantity: 10
+  quantity: 10,
+  deliverOptions: '2'
   }
 ];
 
@@ -33,7 +35,8 @@ export function addToCart(productId, quantity) {
   else {
     cart.push({
       productId: productId,
-      quantity: quantity
+      quantity: quantity,
+      deliverOptions: '1'
     });
   }
   saveToLocalStorage();
@@ -50,4 +53,16 @@ export function removeFromCart(productId) {
   cart = newCart;
   updateCartQuantity();
   saveToLocalStorage();
+}
+
+export function updateCartItemQuantity(productId, quantity) {
+  const matchingProduct = cart.find((item) => item.productId === productId);
+
+  if (!matchingProduct) {
+    return;
+  }
+
+  matchingProduct.quantity = quantity;
+  saveToLocalStorage();
+  updateCartQuantity();
 }

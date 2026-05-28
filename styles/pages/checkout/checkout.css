@@ -32,7 +32,7 @@
   align-items: start;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 700px) {
   .main {
     max-width: 500px;
   }
@@ -57,7 +57,7 @@
   padding-bottom: 5px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 700px) {
   .payment-summary {
     /* grid-row: 1 means this element will be placed into row
       1 in the grid. (Normally, the row that an element is
@@ -85,7 +85,7 @@
   column-gap: 25px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 700px) {
   .cart-item-details-grid {
     grid-template-columns: 100px 1fr;
     row-gap: 30px;
@@ -119,7 +119,22 @@
   margin-left: 3px;
 }
 
-@media (max-width: 1000px) {
+.quantity-input,
+.save-quantity-link {
+  display: none;
+}
+
+.is-editing-quantity .quantity-label,
+.is-editing-quantity .js-update-cart-quantity {
+  display: none;
+}
+
+.is-editing-quantity .quantity-input,
+.is-editing-quantity .save-quantity-link {
+  display: inline-block;
+}
+
+@media (max-width: 700px) {
   .delivery-options {
     /* grid-column: 1 means this element will be placed
        in column 1 in the grid. (Normally, the column that
@@ -208,4 +223,8 @@
 
   margin-top: 11px;
   margin-bottom: 15px;
+}
+.update-input {
+  width: 30px;
+  margin-left: 10px;
 }
