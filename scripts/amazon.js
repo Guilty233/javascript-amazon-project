@@ -1,5 +1,6 @@
 import {cart, addToCart, updateCartQuantity} from '../data/cart.js'; // import the cart array from the cart.js file, help us avoid circular dependencies between our modules
 import {products} from '../data/products.js'; // import the products array from the products.js file
+import {formatCurrency} from './utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 let productsHTML = '';
 
 products.forEach((product) => {
@@ -26,7 +27,7 @@ products.forEach((product) => {
       </div>
 
       <div class="product-price">
-        $${(product.priceCents / 100).toFixed(2)}
+        $${formatCurrency(product.priceCents)}
       </div>
 
       <div class="product-quantity-container">

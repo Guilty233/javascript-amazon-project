@@ -1,5 +1,6 @@
 import {cart} from '../data/cart.js'; // import the cart array from the cart.js file, help us avoid circular dependencies between our modules
 import {products} from '../data/products.js'; // import the products array from the products.js file
+import {formatCurrency} from './utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 let cartSummaryHTML = '';
 cart.forEach((item) => {
   const productId = item.productId;
@@ -24,7 +25,7 @@ cart.forEach((item) => {
             ${matchingProduct.name}
           </div>
           <div class="product-price">
-            $${(matchingProduct.priceCents / 100).toFixed(2)}
+            $${formatCurrency(matchingProduct.priceCents)}
           </div>
           <div class="product-quantity">
             <span>
@@ -46,7 +47,7 @@ cart.forEach((item) => {
           <div class="delivery-option">
             <input type="radio" checked
               class="delivery-option-input"
-              name="delivery-option-1">
+              name="delivery-option-${matchingProduct.id}"> 
             <div>
               <div class="delivery-option-date">
                 Tuesday, June 21
@@ -59,7 +60,7 @@ cart.forEach((item) => {
           <div class="delivery-option">
             <input type="radio"
               class="delivery-option-input"
-              name="delivery-option-1">
+              name="delivery-option-${matchingProduct.id}">
             <div>
               <div class="delivery-option-date">
                 Wednesday, June 15
@@ -72,7 +73,7 @@ cart.forEach((item) => {
           <div class="delivery-option">
             <input type="radio"
               class="delivery-option-input"
-              name="delivery-option-1">
+              name="delivery-option-${matchingProduct.id}">
             <div>
               <div class="delivery-option-date">
                 Monday, June 13
@@ -84,6 +85,6 @@ cart.forEach((item) => {
           </div>
         </div>
       </div>
-  </div>`;
+  </div>`; // each option has a unique name attribute on the input so that they work as separate groups of radio buttons, allowing the user to select a delivery option for each product in their cart
 });
 document.querySelector('.js-order-summary').innerHTML = cartSummaryHTML;
