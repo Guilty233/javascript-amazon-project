@@ -2,6 +2,16 @@ import {cart, removeFromCart} from '../data/cart.js'; // import the cart array f
 import {products} from '../data/products.js'; // import the products array from the products.js file
 import {formatCurrency} from './utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 let cartSummaryHTML = '';
+
+function updateCheckoutItemsQuantity() {
+  const checkoutItemsQuantity = document.querySelector('.js-items-quantity');
+
+  if (checkoutItemsQuantity) {
+    const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
+    checkoutItemsQuantity.innerHTML = `${totalQuantity} items`;
+  }
+}
+
 cart.forEach((item) => {
   const productId = item.productId;
   let matchingProduct;
@@ -95,6 +105,7 @@ document.querySelectorAll('.js-delete-from-cart').forEach((link) => {
     removeFromCart(productId);
     const cartItemContainer = document.querySelector(`.js-cart-item-container-${productId}`);
     cartItemContainer.remove();
-    
+    updateCheckoutItemsQuantity();
   });
 });
+updateCheckoutItemsQuantity();

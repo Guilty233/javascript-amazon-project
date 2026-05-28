@@ -81,3 +81,4 @@ document.querySelectorAll('.js-add-to-cart')
     console.log(cart);
   }); 
 });
+document.querySelector('.js-cart-quantity').innerHTML = cart.reduce((total, item) => total + item.quantity, 0);
