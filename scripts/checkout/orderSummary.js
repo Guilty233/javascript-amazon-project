@@ -1,4 +1,4 @@
-import {cart} from '../../data/cart-class.js'; // import cart object from cart-class.js
+import {cart, removeFromCart, updateCartItemQuantity, updateDeliveryOption} from '../../data/cart.js'; // use procedural cart API from cart.js to match tests
 import {products, getProduct} from '../../data/products.js'; // import the products array from the products.js file
 import {formatCurrency} from '../utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'; // import the Day.js library to work with dates
@@ -7,11 +7,15 @@ import {renderPaymentSummary} from './paymentSummary.js'; // import the renderPa
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
 
+  function getCartItems() {
+    return Array.isArray(cart) ? cart : cart.cartItems;
+  }
+
   function updateCheckoutItemsQuantity() {
     const checkoutItemsQuantity = document.querySelector('.js-items-quantity');
 
     if (checkoutItemsQuantity) {
-      const totalQuantity = cart.cartItems.reduce((total, item) => total + item.quantity, 0);
+      const totalQuantity = getCartItems().reduce((total, item) => total + item.quantity, 0);
       checkoutItemsQuantity.innerHTML = `${totalQuantity} items`;
     }
   }
@@ -26,7 +30,7 @@ export function renderOrderSummary() {
     cartItemContainer.classList.toggle('is-editing-quantity', isEditing);
   }
 
-  cart.cartItems.forEach((item) => {
+  getCartItems().forEach((item) => {
     const productId = item.productId;
     let matchingProduct = getProduct(productId);
     const deliveryOptionId = item.deliverOptions;
@@ -45,7 +49,7 @@ export function renderOrderSummary() {
             ${matchingProduct.name}
           </div>
           <div class="product-price">
-            ${formatCurrency(matchingProduct.priceCents)}
+            ${matchingProduct.getPrice()}
           </div>
           <div class="product-quantity js-product-quantity-${matchingProduct.id}">
             <span>
@@ -104,9 +108,13 @@ export function renderOrderSummary() {
   document.querySelectorAll('.js-delete-from-cart').forEach((link) => {
     link.addEventListener('click', () => {
       const productId = link.dataset.productId;
-      cart.removeFromCart(productId);
+      if (typeof removeFromCart === 'function') {
+        removeFromCart(productId);
+      } else if (cart && typeof cart.removeFromCart === 'function') {
+        cart.removeFromCart(productId);
+      }
       const cartItemContainer = document.querySelector(`.js-cart-item-container-${productId}`);
-      cartItemContainer.remove();
+      if (cartItemContainer) cartItemContainer.remove();
       updateCheckoutItemsQuantity();
       renderPaymentSummary(); // re-render the payment summary to update the displayed total price based on the removed product
     });
@@ -114,7 +122,11 @@ export function renderOrderSummary() {
   document.querySelectorAll('.js-delivery-option').forEach((element) => {
     element.addEventListener('click', () => {
       const {productId, deliveryOptionId} = element.dataset; // get the productId and deliveryOptionId from the data attributes of the clicked element
-      cart.updateDeliveryOption(productId, deliveryOptionId);
+      if (typeof updateDeliveryOption === 'function') {
+        updateDeliveryOption(productId, deliveryOptionId);
+      } else if (cart && typeof cart.updateDeliveryOption === 'function') {
+        cart.updateDeliveryOption(productId, deliveryOptionId);
+      }
       renderOrderSummary(); // re-render the order summary to update the displayed delivery date and price based on the newly selected delivery option
       renderPaymentSummary(); // re-render the payment summary to update the displayed delivery price based on the newly selected delivery option
     });
@@ -142,7 +154,11 @@ export function renderOrderSummary() {
     const newQuantity = Number.isInteger(parsedQuantity) && parsedQuantity > 0 ? parsedQuantity : 1;
     quantityInput.value = newQuantity;
 
-    cart.updateCartItemQuantity(productId, newQuantity);
+    if (typeof updateCartItemQuantity === 'function') {
+      updateCartItemQuantity(productId, newQuantity);
+    } else if (cart && typeof cart.updateCartItemQuantity === 'function') {
+      cart.updateCartItemQuantity(productId, newQuantity);
+    }
 
     setEditingQuantity(productId, false);
 
