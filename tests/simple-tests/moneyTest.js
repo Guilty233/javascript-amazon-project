@@ -1,4 +1,4 @@
-import {formatCurrency} from '../scripts/utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
+import {formatCurrency} from '../../scripts/utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 
 // Test cases for the formatCurrency function
 if(formatCurrency(2095) === '$20.95') {
