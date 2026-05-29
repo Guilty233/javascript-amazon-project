@@ -1,11 +1,11 @@
-import {cart} from '../../data/cart.js'; // import the cart array from the cart.js file, help us avoid circular dependencies between our modules
+import {cart} from '../../data/cart-class.js'; // import the cart object from cart-class.js, help us avoid circular dependencies between our modules
 import {getProduct} from '../../data/products.js'; // import the products array from the products.js file
 import {getDeliveryOption} from '../../data/deliveryOptions.js'; // import the deliveryOptions array from the deliveryOptions.js file to display delivery options for each product in the cart
 import {formatCurrency} from '../utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 export function renderPaymentSummary() {
   let productPriceCents = 0;
   let shippingPriceCents = 0;
-  cart.forEach((cartItem) => {
+  cart.cartItems.forEach((cartItem) => {
     const product = getProduct(cartItem.productId);
     productPriceCents += product.priceCents * cartItem.quantity;
     const deliveryOption = getDeliveryOption(cartItem.deliverOptions);
@@ -21,7 +21,7 @@ export function renderPaymentSummary() {
     </div>
 
     <div class="payment-summary-row">
-      <div>Items (${cart.reduce((total, item) => total + item.quantity, 0)}):</div>
+      <div>Items (${cart.cartItems.reduce((total, item) => total + item.quantity, 0)}):</div>
       <div class="payment-summary-money">${formatCurrency(productPriceCents)}</div>
     </div>
 

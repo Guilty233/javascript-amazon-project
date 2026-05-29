@@ -1,4 +1,4 @@
-import {cart, addToCart} from '../data/cart.js'; // import the cart array from the cart.js file
+import {cart} from '../data/cart-class.js'; // import cart object from cart-class.js
 import {products} from '../data/products.js'; // import the products array from the products.js file
 import {formatCurrency} from './utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 let productsHTML = '';
@@ -75,10 +75,10 @@ document.querySelectorAll('.js-add-to-cart')
       const quantitySelect = button.closest('.product-container').querySelector('select');
       const quantityToAdd = quantitySelect ? (parseInt(quantitySelect.value, 10) || 1) : 1;
 
-    addToCart(productId, quantityToAdd);
+    cart.addToCart(productId, quantityToAdd);
 
     showAddedToCartMessage(productId);
-    console.log(cart);
+    console.log(cart.cartItems);
   }); 
 });
-document.querySelector('.js-cart-quantity').innerHTML = cart.reduce((total, item) => total + item.quantity, 0);
+document.querySelector('.js-cart-quantity').innerHTML = cart.cartItems.reduce((total, item) => total + item.quantity, 0);

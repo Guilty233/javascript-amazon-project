@@ -1,4 +1,4 @@
-import {cart, removeFromCart, updateCartItemQuantity, updateDeliveryOption} from '../../data/cart.js'; // import cart helpers from cart.js
+import {cart} from '../../data/cart-class.js'; // import cart object from cart-class.js
 import {products, getProduct} from '../../data/products.js'; // import the products array from the products.js file
 import {formatCurrency} from '../utils/money.js'; // import the formatCurrency function from the money.js file to format price in dollars and cents
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'; // import the Day.js library to work with dates
@@ -11,7 +11,7 @@ export function renderOrderSummary() {
     const checkoutItemsQuantity = document.querySelector('.js-items-quantity');
 
     if (checkoutItemsQuantity) {
-      const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
+      const totalQuantity = cart.cartItems.reduce((total, item) => total + item.quantity, 0);
       checkoutItemsQuantity.innerHTML = `${totalQuantity} items`;
     }
   }
@@ -26,7 +26,7 @@ export function renderOrderSummary() {
     cartItemContainer.classList.toggle('is-editing-quantity', isEditing);
   }
 
-  cart.forEach((item) => {
+  cart.cartItems.forEach((item) => {
     const productId = item.productId;
     let matchingProduct = getProduct(productId);
     const deliveryOptionId = item.deliverOptions;
@@ -104,7 +104,7 @@ export function renderOrderSummary() {
   document.querySelectorAll('.js-delete-from-cart').forEach((link) => {
     link.addEventListener('click', () => {
       const productId = link.dataset.productId;
-      removeFromCart(productId);
+      cart.removeFromCart(productId);
       const cartItemContainer = document.querySelector(`.js-cart-item-container-${productId}`);
       cartItemContainer.remove();
       updateCheckoutItemsQuantity();
@@ -114,7 +114,7 @@ export function renderOrderSummary() {
   document.querySelectorAll('.js-delivery-option').forEach((element) => {
     element.addEventListener('click', () => {
       const {productId, deliveryOptionId} = element.dataset; // get the productId and deliveryOptionId from the data attributes of the clicked element
-      updateDeliveryOption(productId, deliveryOptionId);
+      cart.updateDeliveryOption(productId, deliveryOptionId);
       renderOrderSummary(); // re-render the order summary to update the displayed delivery date and price based on the newly selected delivery option
       renderPaymentSummary(); // re-render the payment summary to update the displayed delivery price based on the newly selected delivery option
     });
@@ -142,7 +142,7 @@ export function renderOrderSummary() {
     const newQuantity = Number.isInteger(parsedQuantity) && parsedQuantity > 0 ? parsedQuantity : 1;
     quantityInput.value = newQuantity;
 
-    updateCartItemQuantity(productId, newQuantity);
+    cart.updateCartItemQuantity(productId, newQuantity);
 
     setEditingQuantity(productId, false);
 
