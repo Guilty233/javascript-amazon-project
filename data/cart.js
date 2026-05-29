@@ -1,15 +1,19 @@
-export let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) :
-[{
-  productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
-  quantity: 2,
-  deliverOptions: '1'
-  },{
-  productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
-  quantity: 1,
-  deliverOptions: '2'
-  }
-];
+export let cart;
 
+export function loadFromLocalStorage() {
+  cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) :
+  [{
+    productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+    quantity: 2,
+    deliverOptions: '1'
+    },{
+    productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
+    quantity: 1,
+    deliverOptions: '2'
+    }
+  ];
+}
+loadFromLocalStorage(); // this function loads the cart from local storage when the module is first imported, ensuring that the cart is initialized with any previously saved items in local storage
 function saveToLocalStorage() {
   localStorage.setItem('cart', JSON.stringify(cart)); // this function saves the current state of the cart to local storage by converting the cart array into a JSON string and storing it under the key 'cart'
 }
@@ -26,7 +30,7 @@ export function updateCartQuantity() {
     cartQuantityElement.innerHTML = cartQuantity;
   }
 }
-export function addToCart(productId, quantity) {
+export function addToCart(productId, quantity = 1) {
   const matchingProduct = cart.find((item) => item.productId === productId);
 
   if (matchingProduct) {
