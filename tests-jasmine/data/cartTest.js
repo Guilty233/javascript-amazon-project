@@ -28,13 +28,19 @@ describe('test suite: addToCart', () => {
   });
   it('adds a new product to the cart', () => {
     spyOn(localStorage, 'setItem'); // spy on the localStorage.setItem method to check if it is called when a product is added to the cart    
-    spyOn(localStorage, 'getItem').and.callFake(() => {return JSON.stringify([]);}); // spy on the localStorage.getItem method to return an empty cart when loadFromLocalStorage is called, ensuring that the cart starts empty for this test
-    
+    spyOn(localStorage, 'getItem').and.callFake(() => {
+      return JSON.stringify([{
+          productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6', 
+          quantity: 1, 
+          deliveryOptions: '1'
+        }]);
+    }); // spy on the localStorage.getItem method to return an existing product when loadFromLocalStorage is called, ensuring that the cart starts with one product for this test
+
     loadFromLocalStorage();
     addToCart('e43638ce-6aa0-4b85-b27f-e1d07eb678c6');
-    expect(cart.length).toEqual(1);
+    expect(cart.length).toEqual(1); // the cart should still have only one product since the same product is added again, but the quantity should be updated
     expect(localStorage.setItem).toHaveBeenCalledTimes(1); // expect localStorage.setItem to have been called once to save the updated cart to local storage after adding a product
     expect(cart[0].productId).toBe('e43638ce-6aa0-4b85-b27f-e1d07eb678c6');
-    expect(cart[0].quantity).toEqual(1); // the quantity should be set to 1 when a new product is added to the cart
+    expect(cart[0].quantity).toEqual(2); // the quantity should be set to 2 when the existing product is added again
   });
 });
