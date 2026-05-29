@@ -123,7 +123,6 @@ export function loadProducts(fun){
   xhr.open('GET', 'https://supersimplebackend.dev/products');
   xhr.send();
 }
-loadProducts();
 
 /*
 export const products = [
