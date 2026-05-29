@@ -1,15 +1,11 @@
 import {renderOrderSummary} from './checkout/orderSummary.js'; // import the renderOrderSummary function from the orderSummary.js file to display the order summary on the checkout page
 import {renderPaymentSummary} from './checkout/paymentSummary.js'; // import the renderPaymentSummary function from the paymentSummary.js file to display the payment summary on the checkout page
-import {loadProducts} from '../data/products.js'; // import the loadProducts function from the products.js file to load the products data before rendering the order summary and payment summary on the checkout page
+import {loadProducts,loadProductsFetch} from '../data/products.js'; // import the loadProducts function from the products.js file to load the products data before rendering the order summary and payment summary on the checkout page
 import '../data/backend-practice.js'; 
 import {loadCart} from '../data/cart.js'; 
 
 Promise.all([
-  new Promise((resolve) => {
-    loadProducts(() => {
-      resolve();
-    });
-  }),
+  loadProductsFetch(),
   new Promise((resolve) => {
     loadCart(() => {  
       resolve();
