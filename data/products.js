@@ -70,8 +70,24 @@ const tshirt = new Clothing({
     sizeChartLink: "images/clothing-size-chart.png"
   }
 );
+/*
+const date = new Date();
+console.log(date);
+console.log(date.toLocaleTimeString());
 console.log(tshirt);
 console.log(tshirt.getPrice());
+const object3 ={
+  method(){
+    console.log(this);
+  }
+}
+object3.method();
+function logThis(){
+  console.log(this);
+}
+logThis.call('hi');
+console.log(this);
+*/
 const product1 = new Product({
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
     image: "images/products/athletic-cotton-socks-6-pairs.jpg",
