@@ -108,7 +108,7 @@ console.log(product1);
 export let products =[];
 
 export function loadProductsFetch(){
-   const promise = fetch('https://supersimplebackend.dev/products').then((response) => {
+   const promise = fetch('https://error.supersimplebackend.dev/products').then((response) => {
     return response.json();
   }).then((productsData) => {
     products = productsData.map((productDetails) => {
@@ -120,7 +120,9 @@ export function loadProductsFetch(){
     });
     console.log(products);
     
-  });
+  })/*.catch((error) => {
+    console.log('Unexpected error. Please try again later.');
+  });*/
   return promise;
 }
 /*
@@ -142,6 +144,11 @@ export function loadProducts(fun){
     console.log(products);
     fun(); // call the function passed as an argument to loadProducts after the products have been loaded and processed
   });
+
+  xhr.addEventListener('error', (error) => {
+    console.log('Unexpected error. Please try again later.');
+  });
+
   xhr.open('GET', 'https://supersimplebackend.dev/products');
   xhr.send();
 }

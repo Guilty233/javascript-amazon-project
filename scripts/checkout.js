@@ -5,14 +5,22 @@ import '../data/backend-practice.js';
 import {loadCart} from '../data/cart.js'; 
 
 async function loadPage(){
+  try{
+    // throw 'error';
+
+    await loadProductsFetch(); // wait for the products to finish loading before rendering the order summary and payment summary to ensure that the product information is available when rendering the summaries
   
-  await loadProductsFetch(); // wait for the products to finish loading before rendering the order summary and payment summary to ensure that the product information is available when rendering the summaries
-  
-  const value = await new Promise((resolve) => {
-    loadCart(() => {  
-      resolve('value3');
+    const value = await new Promise((resolve, reject) => {
+      // throw 'error';
+      loadCart(() => {  
+        // reject('error');
+        resolve('value3');
+      });
     });
-  });
+  } catch (error) {
+    console.log('Unexpected error. Please try again later.');
+  }
+  
 
   renderOrderSummary();
   renderPaymentSummary();
