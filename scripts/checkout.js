@@ -4,6 +4,22 @@ import {loadProducts,loadProductsFetch} from '../data/products.js'; // import th
 import '../data/backend-practice.js'; 
 import {loadCart} from '../data/cart.js'; 
 
+async function loadPage(){
+  
+  await loadProductsFetch(); // wait for the products to finish loading before rendering the order summary and payment summary to ensure that the product information is available when rendering the summaries
+  
+  const value = await new Promise((resolve) => {
+    loadCart(() => {  
+      resolve('value3');
+    });
+  });
+
+  renderOrderSummary();
+  renderPaymentSummary();
+
+}
+loadPage(); // call the loadPage function to load the products and cart data before rendering the order summary and payment summary on the checkout page to ensure that the product information is available when rendering the summaries
+/*
 Promise.all([
   loadProductsFetch(),
   new Promise((resolve) => {
@@ -15,6 +31,7 @@ Promise.all([
   renderOrderSummary(); // call the renderOrderSummary function to display the order summary on the checkout page after the products and cart data have finished loading to ensure that the product information is available when rendering the order summary
   renderPaymentSummary(); // call the renderPaymentSummary function to display the payment summary on the checkout page after the products and cart data have finished loading to ensure that the product information is available when rendering the payment summary
 });
+*/
 /*
 new Promise((resolve) =>{
   //console.log('start loading products');
